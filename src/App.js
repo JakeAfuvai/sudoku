@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from "react"
+import Tile from "./Tile"
+import "./App.css"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = props => {
+    const [tiles, setTiles] = useState([])
+
+    useEffect(() => {
+        for (let i = 0; i < 9; i++) {
+            const tile = {tile: i + 1, val: 0}
+
+            setTiles(prevTiles => [...prevTiles, tile])
+        }
+    }, [])
+
+    const displayTiles = tiles.map(tile => 
+        <Tile key={tile.tile} tile={tile}/>  
+    )
+
+    return (
+        <div className="app-container">
+            {displayTiles}
+        </div>
+    )
 }
 
-export default App;
+export default App
