@@ -1,44 +1,44 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import "../App.css"
-import { createGrid } from "../setters/createGrid"
-import { tiles } from "../setters/tiles"
-import { columns } from "../setters/columns"
-import { rows } from "../setters/rows"
+import { Context } from "../Context/Context"
 
-const App = () => {
-    const [ sudokuGrid, setSudokuGrid ] = useState([])
-    const [ sudokuTiles, setSudokuTiles ] = useState([])
-    const [ sudokuColumns, setSudokuColumns ] = useState([])
-    const [ sudokuRows, setSudokuRows ] = useState([])
+const App = props => {
+    // global context state
+    const { 
+        sudokuGrid,
+        sudokuTiles,
+        sudkokuColumns,
+        sudokuRows 
+    } = useContext(Context)
+    // global context state methods
+    const { setSudokuGrid, setSudokuTiles, setSudokuColumns, setSudokuRows } = useContext(Context)
 
-    useEffect(() => {
-        const grid = createGrid()
-        setSudokuGrid(grid)
-        setSudokuTiles(tiles(grid))
-        setSudokuColumns(columns(grid))
-        setSudokuRows(rows(grid))
-    }, [])
+    const [ showPreview, setShowPreview ] = useState(false)
+    const [ lockPreview, setLockPreview ] = useState(false)
 
     const previewDisplay = sudokuGrid.map(cell => cell.subGrid.map(subCell => 
-            <p 
-                key={subCell.key}
-                style={{
-                    gridArea: `${subCell.gridValue}`,
-                    fontSize: "8pt",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}
-            >
-                {subCell.value}
-            </p>
-        ))
-    
+        <p 
+            key={subCell.key}
+            style={{
+                gridArea: `${subCell.gridValue}`,
+                fontSize: "8pt",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            }}
+            onMouseEnter={() => setShowPreview(true)}
+            onMouseLeave={() => setShowPreview(false)}
+            onClick={() => setLockPreview(prevState => !prevState)}
+        >
+            {subCell.value}
+        </p>   
+    ))
+
     // change !true and !== 0 to change to preview style mode
-    const cellStyle = true ? "value" : "preview"
+    const cellStyle = !true ? "value" : "preview"
 
     const displayGrid = sudokuGrid.map(cell => 
-        cell.value == 0 ?
+        cell.value !== 0 ?
         <p 
             key={cell.key}
             className={cellStyle} 
@@ -58,8 +58,6 @@ const App = () => {
             }}
         >{previewDisplay}</div>  
     )
-
-    console.log(sudokuRows)
 
     return (
         <div className="app-container">
